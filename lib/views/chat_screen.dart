@@ -26,10 +26,12 @@ class _ChatScreenState extends State<ChatScreen> {
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  String userIdSharedPref;
+  String userIdSharedPref, userNameSharedPref;
+  String userID, userName;
 
-  void getUserIDShared() async {
+  void getUserShared() async {
     userIdSharedPref = await SharedPrefFunctions().getUserIDSharedPref();
+    userNameSharedPref = await SharedPrefFunctions().getUserNameSharedPref();
   }
 
   Widget chatRoomList() {
@@ -40,7 +42,6 @@ class _ChatScreenState extends State<ChatScreen> {
               ? ListView.builder(
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index) {
-                    String userID;
                     if (snapshot.data.documents[index]["usersID"]["user1"] ==
                         userIdSharedPref) {
                       userID =
@@ -50,14 +51,22 @@ class _ChatScreenState extends State<ChatScreen> {
                           snapshot.data.documents[index]["usersID"]["user1"];
                     }
 
+                    if (snapshot.data.documents[index]["users"][0] ==
+                        userNameSharedPref) {
+                      userName = snapshot.data.documents[index]["users"][1];
+                    } else {
+                      userName = snapshot.data.documents[index]["users"][0];
+                    }
+
                     return ChatRoomsTile(
                         //there is an error here, when signing in Constant.userName is null
                         //that's why replacing condentions are not met.
 
-                        snapshot.data.documents[index]["chatRoomId"]
-                            .toString()
-                            .replaceAll("_", "")
-                            .replaceAll(Constant.userName, ""),
+                        // snapshot.data.documents[index]["chatRoomId"]
+                        //     .toString()
+                        //     .replaceAll("_", "")
+                        //     .replaceAll(Constant.userName, ""),
+                        userName,
                         snapshot.data.documents[index]["chatRoomId"],
                         userID);
                   })
@@ -142,7 +151,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
-    getUserIDShared();
+    getUserShared();
     getUserInfo();
     registerNotification();
     configLocalNotification();

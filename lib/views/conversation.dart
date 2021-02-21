@@ -37,7 +37,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
               ? ListView.builder(
                   padding: EdgeInsets.only(bottom: 50),
                   physics: BouncingScrollPhysics(),
-                  //reverse: false,
+                  reverse: true,
                   shrinkWrap: true,
                   controller: scrollController,
                   itemCount: snapshot.data.documents.length,
@@ -53,6 +53,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 )
               : Container();
         });
+  }
+
+  scrollFunction() {
+    WidgetsBinding.instance.addPostFrameCallback((_) =>
+        {scrollController.jumpTo(scrollController.position.maxScrollExtent)});
   }
 
   sendMessage() async {
@@ -111,7 +116,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarWidget(context),
+      appBar: AppBar(
+        title: Text(widget.chatWith),
+      ),
       body: WillPopScope(
         onWillPop: onBackPress,
         child: Column(
