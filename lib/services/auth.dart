@@ -1,17 +1,10 @@
 import 'package:chat_app/helper/sharedPrefFunctions.dart';
-import 'package:chat_app/model/userr.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  Userr _userFromFirebase(User user) {
-    return user != null
-        ? Userr(
-            userId: user.uid, displayName: user.displayName, email: user.email)
-        : null;
-  }
 
   Future<dynamic> signInWithEmailAndPassword(
       String email, String password) async {
@@ -20,9 +13,7 @@ class AuthMethods {
           email: email, password: password);
       User firebaseUser = result.user;
       return firebaseUser;
-      // return _userFromFirebase(firebaseUser);
     } catch (e) {
-      //print(e.toString());
       return e.message;
     }
   }
@@ -34,17 +25,14 @@ class AuthMethods {
           email: email, password: password);
       User firebaseUser = result.user;
       return firebaseUser;
-      //return _userFromFirebase(firebaseUser);
     } catch (e) {
-      // print(e.toString());
       return e.message;
     }
   }
 
-  Future<String> resetPass(String email) async {
+  Future<dynamic> resetPass(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
-      // return true;
     } catch (e) {
       print(e.toString());
       return e.message;
@@ -74,9 +62,9 @@ class AuthMethods {
           await _auth.signInWithCredential(authCredential);
       User firebaseUser = authResult.user;
       return firebaseUser;
-      // return _userFromFirebase(firebaseUser);
     } catch (e) {
       print(e.toString());
+      return null;
     }
   }
 }

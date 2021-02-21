@@ -106,7 +106,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(context),
+      appBar: appBarWidget(context),
       body: isLoading
           ? Container(
               child: Center(
@@ -129,7 +129,7 @@ class _SignUpState extends State<SignUp> {
                                   : null;
                             },
                             controller: userNameController,
-                            decoration: TextFieldInputDecoration('Username'),
+                            decoration: textFieldInputDecoration('Username'),
                           ),
                           TextFormField(
                             validator: (value) {
@@ -139,7 +139,7 @@ class _SignUpState extends State<SignUp> {
                                   : "Please Enter a valid email address";
                             },
                             controller: emailController,
-                            decoration: TextFieldInputDecoration('Email'),
+                            decoration: textFieldInputDecoration('Email'),
                           ),
                           TextFormField(
                             obscureText: true,
@@ -149,7 +149,7 @@ class _SignUpState extends State<SignUp> {
                                   : "Please enter a password with minimum 6 characters";
                             },
                             controller: passwordController,
-                            decoration: TextFieldInputDecoration('Password'),
+                            decoration: textFieldInputDecoration('Password'),
                           ),
                         ],
                       ),

@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Widget AppBarWidget(BuildContext context) {
+Widget appBarWidget(BuildContext context) {
   return AppBar(
     title: Text('Chat App'),
   );
 }
 
-InputDecoration TextFieldInputDecoration(String hintText) {
+InputDecoration textFieldInputDecoration(String hintText) {
   return InputDecoration(
     hintText: hintText,
     focusedBorder: UnderlineInputBorder(

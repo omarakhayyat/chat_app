@@ -1,4 +1,3 @@
-import 'package:chat_app/helper/constant.dart';
 import 'package:chat_app/helper/sharedPrefFunctions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -35,17 +34,18 @@ class DatabaseMethods {
     );
   }
 
-  updateChattingWith(String userName) async {
+  updateChattingWith(String userID) async {
     String _docId = await _instance
         .collection('users')
-        .where("username", isEqualTo: Constant.userName)
+        .where("UID",
+            isEqualTo: await SharedPrefFunctions().getUserIDSharedPref())
         .get()
         .then((value) => value.docs.first.id);
 
     _instance
         .collection('users')
         .doc(_docId)
-        .set({'chattingWith': userName}, SetOptions(merge: true));
+        .set({'chattingWith': userID}, SetOptions(merge: true));
   }
 
   createChatRoom(String chatRoomID, chatRoomMap) {

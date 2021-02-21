@@ -8,9 +8,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'chat_screen.dart';
 
-//TODO: googleSignIn is ready, we need to test it
-//we will add/create like signMeIn method
-
 //TODO: after finishing this part, I will add authenticate with Phone Number
 
 class SignIn extends StatefulWidget {
@@ -142,6 +139,7 @@ class _SignInState extends State<SignIn> {
               }),
               await sharedPrefFunctions.setUserLoggedInSharedPref(true),
               await sharedPrefFunctions.setUserEmailSharedPref(value.email),
+              await sharedPrefFunctions.setUserIDSharedPref(value.uid),
               Constant.userName = value.displayName,
               await sharedPrefFunctions
                   .setUserNameSharedPref(value.displayName)
@@ -163,7 +161,7 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBarWidget(context),
+      appBar: appBarWidget(context),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 24),
         child: Column(
@@ -183,7 +181,7 @@ class _SignInState extends State<SignIn> {
                           : "Please Enter a valid email address";
                     },
                     controller: emailController,
-                    decoration: TextFieldInputDecoration('Email'),
+                    decoration: textFieldInputDecoration('Email'),
                   ),
                   TextFormField(
                     obscureText: true,
@@ -193,7 +191,7 @@ class _SignInState extends State<SignIn> {
                           : "Please enter a password with minimum 6 characters";
                     },
                     controller: passwordController,
-                    decoration: TextFieldInputDecoration('Password'),
+                    decoration: textFieldInputDecoration('Password'),
                   ),
                 ],
               ),

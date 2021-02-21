@@ -1,10 +1,9 @@
 import 'package:chat_app/helper/constant.dart';
+import 'package:chat_app/helper/sharedPrefFunctions.dart';
 import 'package:chat_app/services/database.dart';
 import 'package:chat_app/widgets/emoji_picker_widget.dart';
 import 'package:chat_app/widgets/input_widget.dart';
 import 'package:chat_app/widgets/widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:intl/intl.dart';
@@ -12,7 +11,8 @@ import 'package:intl/intl.dart';
 class ConversationScreen extends StatefulWidget {
   final String chatRoomId;
   final String chatWith;
-  ConversationScreen(this.chatRoomId, this.chatWith);
+  final String chatWithID;
+  ConversationScreen(this.chatRoomId, this.chatWith, this.chatWithID);
 
   @override
   _ConversationScreenState createState() => _ConversationScreenState();
@@ -55,12 +55,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
         });
   }
 
-  sendMessage() {
+  sendMessage() async {
     if (msgController.text.isNotEmpty) {
       Map<String, dynamic> messageMap = {
         "message": msgController.text,
         "sendBy": Constant.userName,
         "sendTo": widget.chatWith,
+        "sendByUID": await SharedPrefFunctions().getUserIDSharedPref(),
+        "sendToUID": widget.chatWithID,
         "time": DateTime.now().millisecondsSinceEpoch,
       };
       databaseMethods.postConversationMessages(widget.chatRoomId, messageMap);
@@ -76,7 +78,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       });
     });
 
-    databaseMethods.updateChattingWith(widget.chatWith);
+    databaseMethods.updateChattingWith(widget.chatWithID);
 
     keyboardVisibilityController.onChange.listen((bool isKeyboardVisible) {
       if (mounted) {
@@ -98,7 +100,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     keyboardVisibilityController.onChange
         .listen((bool isKeyboardVisible) {})
         .cancel();
@@ -110,7 +111,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(context),
+      appBar: appBarWidget(context),
       body: WillPopScope(
         onWillPop: onBackPress,
         child: Column(

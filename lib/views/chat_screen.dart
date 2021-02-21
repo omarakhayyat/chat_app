@@ -26,6 +26,11 @@ class _ChatScreenState extends State<ChatScreen> {
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+  String userIdSharedPref;
+
+  void getUserIDShared() async {
+    userIdSharedPref = await SharedPrefFunctions().getUserIDSharedPref();
+  }
 
   Widget chatRoomList() {
     return StreamBuilder(
@@ -35,15 +40,26 @@ class _ChatScreenState extends State<ChatScreen> {
               ? ListView.builder(
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index) {
+                    String userID;
+                    if (snapshot.data.documents[index]["usersID"]["user1"] ==
+                        userIdSharedPref) {
+                      userID =
+                          snapshot.data.documents[index]["usersID"]["user2"];
+                    } else {
+                      userID =
+                          snapshot.data.documents[index]["usersID"]["user1"];
+                    }
+
                     return ChatRoomsTile(
-                      //there is an error here, when signing in Constant.userName is null
-                      //that's why replacing condentions are not met.
-                      snapshot.data.documents[index]["chatRoomId"]
-                          .toString()
-                          .replaceAll("_", "")
-                          .replaceAll(Constant.userName, ""),
-                      snapshot.data.documents[index]["chatRoomId"],
-                    );
+                        //there is an error here, when signing in Constant.userName is null
+                        //that's why replacing condentions are not met.
+
+                        snapshot.data.documents[index]["chatRoomId"]
+                            .toString()
+                            .replaceAll("_", "")
+                            .replaceAll(Constant.userName, ""),
+                        snapshot.data.documents[index]["chatRoomId"],
+                        userID);
                   })
               : Container();
         });
@@ -126,6 +142,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
+    getUserIDShared();
     getUserInfo();
     registerNotification();
     configLocalNotification();
@@ -184,7 +201,8 @@ class _ChatScreenState extends State<ChatScreen> {
 class ChatRoomsTile extends StatelessWidget {
   final String userName;
   final String chatRoomId;
-  ChatRoomsTile(this.userName, this.chatRoomId);
+  final String userID;
+  ChatRoomsTile(this.userName, this.chatRoomId, this.userID);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -193,7 +211,8 @@ class ChatRoomsTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ConversationScreen(chatRoomId, userName),
+            builder: (context) =>
+                ConversationScreen(chatRoomId, userName, userID),
           ),
         );
       },

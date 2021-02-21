@@ -19,15 +19,17 @@ exports.sendNotification = functions.firestore
     const doc = snap.data()
     console.log(doc)
 
-    const idFrom = doc.sendBy
-    const idTo = doc.sendTo
+    const nameFrom = doc.sendBy
+    const nameTo = doc.sendTo
+    const idFrom = doc.sendByUID
+    const idTo = doc.sendToUID
     const contentMessage = doc.message
 
     // Get push token user to (receive)
     admin
       .firestore()
       .collection('users')
-      .where('username', '==', idTo)
+      .where('UID', '==', idTo)
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(userTo => {
@@ -39,7 +41,7 @@ exports.sendNotification = functions.firestore
             admin
               .firestore()
               .collection('users')
-              .where('username', '==', idFrom)
+              .where('UID', '==', idFrom)
               .get()
               .then(querySnapshot2 => {
                 querySnapshot2.forEach(userFrom => {

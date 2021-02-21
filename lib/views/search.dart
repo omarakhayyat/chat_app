@@ -28,14 +28,17 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  createChat(String username) async {
+  createChat(String username, String userID) async {
+    String currentUserID = await sharedPrefFunctions.getUserIDSharedPref();
     Constant.userName = await sharedPrefFunctions.getUserNameSharedPref();
-    if (username != Constant.userName) {
+    if (userID != currentUserID) {
       List<String> users = [username, Constant.userName];
+      Map<String, String> usersID = {"user1": userID, "user2": currentUserID};
       String chatRoomID = getChatRoomId(username, Constant.userName);
 
       Map<String, dynamic> chatRoomMap = {
         "users": users,
+        "usersID": usersID,
         "chatRoomId": chatRoomID,
       };
       databaseMethods.createChatRoom(chatRoomID, chatRoomMap);
@@ -43,7 +46,8 @@ class _SearchScreenState extends State<SearchScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ConversationScreen(chatRoomID, username)));
+              builder: (context) =>
+                  ConversationScreen(chatRoomID, username, userID)));
     } else {
       print("You Cannot Send message to your self");
     }
@@ -55,9 +59,10 @@ class _SearchScreenState extends State<SearchScreen> {
             shrinkWrap: true,
             itemCount: searchSnapshot.docs.length,
             itemBuilder: (context, index) {
-              return SearchTile(
+              return searchTile(
                 userEmail: searchSnapshot.docs[index].data()['email'],
                 userName: searchSnapshot.docs[index].data()['username'],
+                userID: searchSnapshot.docs[index].data()['UID'],
               );
             },
           )
@@ -66,7 +71,7 @@ class _SearchScreenState extends State<SearchScreen> {
           );
   }
 
-  Widget SearchTile({String userName, String userEmail}) {
+  Widget searchTile({String userName, String userEmail, String userID}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
@@ -81,7 +86,7 @@ class _SearchScreenState extends State<SearchScreen> {
           Spacer(),
           GestureDetector(
             onTap: () {
-              createChat(userName);
+              createChat(userName, userID);
             },
             child: Container(
               decoration: BoxDecoration(
@@ -98,7 +103,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(context),
+      appBar: appBarWidget(context),
       body: Container(
         child: Column(
           mainAxisSize: MainAxisSize.min,

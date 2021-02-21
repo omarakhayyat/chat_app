@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:chat_app/services/auth.dart';
-import 'package:chat_app/views/sign_in.dart';
 import 'package:chat_app/widgets/widget.dart';
 import 'package:flutter/material.dart';
 
@@ -96,7 +95,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
-      appBar: AppBarWidget(context),
+      appBar: appBarWidget(context),
       body: Container(
         child: Stack(
           children: [
@@ -125,7 +124,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     key: formKey,
                     child: TextFormField(
                       controller: _emailControl,
-                      decoration: TextFieldInputDecoration("Email"),
+                      decoration: textFieldInputDecoration("Email"),
                       validator: (value) {
                         return RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
                                 .hasMatch(value)
